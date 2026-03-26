@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>浮気兆候チェック｜匿名・無料診断</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f0f;
+      color: #e8e8e8;
+      font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ヘッダー */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #888;
+      line-height: 1.7;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #aaa;
+      padding: 4px 12px;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    /* セクション */
+    .section-title {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: #666;
+      text-transform: uppercase;
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    /* 質問カード */
+    .question-card {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .question-text {
+      font-size: 15px;
+      color: #ddd;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .option-label {
+      flex: 1;
+      min-width: 80px;
+      cursor: pointer;
+    }
+
+    .option-label input[type="radio"] {
+      display: none;
+    }
+
+    .option-btn {
+      display: block;
+      text-align: center;
+      padding: 10px 6px;
+      border-radius: 6px;
+      border: 1px solid #2e2e2e;
+      background: #111;
+      color: #aaa;
+      font-size: 13px;
+      transition: all 0.15s;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .option-label input[type="radio"]:checked + .option-btn {
+      border-color: #c0392b;
+      background: #1e0a09;
+      color: #e74c3c;
+      font-weight: 600;
+    }
+
+    .option-btn:hover {
+      border-color: #444;
+      color: #ccc;
+    }
+
+    /* 送信ボタン */
+    .submit-wrap {
+      margin-top: 36px;
+      text-align: center;
+    }
+
+    .submit-btn {
+      background: #c0392b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 16px 48px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .submit-btn:hover { background: #a93226; }
+
+    .submit-note {
+      font-size: 12px;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    /* 結果エリア */
+    #result {
+      display: none;
+      margin-top: 40px;
+    }
+
+    .result-header {
+      text-align: center;
+      padding: 32px 20px;
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      margin-bottom: 24px;
+    }
+
+    .score-label {
+      font-size: 12px;
+      color: #888;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .score-number {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .score-number span {
+      font-size: 20px;
+      font-weight: 400;
+      color: #888;
+    }
+
+    .score-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 16px;
+    }
+
+    /* スコア別カラー */
+    .level-low .score-number { color: #27ae60; }
+    .level-low .score-title { color: #27ae60; }
+    .level-mid .score-number { color: #f39c12; }
+    .level-mid .score-title { color: #f39c12; }
+    .level-high .score-number { color: #e67e22; }
+    .level-high .score-title { color: #e67e22; }
+    .level-critical .score-number { color: #e74c3c; }
+    .level-critical .score-title { color: #e74c3c; }
+
+    /* 結果テキスト */
+    .result-body {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px;
+      font-size: 15px;
+      color: #ccc;
+      line-height: 1.9;
+    }
+
+    .result-body h3 {
+      font-size: 13px;
+      color: #888;
+      letter-spacing: 0.08em;
+      margin: 20px 0 10px;
+    }
+
+    .result-body ul {
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .result-body ul li {
+      padding: 6px 0 6px 16px;
+      position: relative;
+      color: #bbb;
+      font-size: 14px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .result-body ul li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: #e74c3c;
+    }
+
+    /* 有料誘導 */
+    .paid-teaser {
+      background: #0d0d0d;
+      border: 1px solid #c0392b;
+      border-radius: 10px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+
+    .paid-teaser h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e74c3c;
+      margin-bottom: 16px;
+    }
+
+    .paid-teaser ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .paid-teaser ul li {
+      font-size: 14px;
+      color: #bbb;
+      padding: 7px 0 7px 20px;
+      position: relative;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .paid-teaser ul li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #e74c3c;
+    }
+
+    .paid-btn {
+      display: block;
+      text-align: center;
+      background: #c0392b;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: background 0.2s;
+    }
+
+    .paid-btn:hover { background: #a93226; }
+
+    .paid-price {
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* リセット */
+    .reset-btn {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: #555;
+      font-size: 13px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      text-decoration: underline;
+    }
+
+    .reset-btn:hover { color: #888; }
+
+    /* フッター */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 12px;
+      color: #444;
+      border-top: 1px solid #1a1a1a;
+      margin-top: 60px;
+    }
+
+    .warning-box {
+      background: #111;
+      border-left: 3px solid #444;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 32px;
+      border-radius: 0 4px 4px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="badge">匿名・無料・登録不要</div>
+    <h1>浮気兆候チェック</h1>
+    <p>気になる行動変化を選ぶだけ。<br>15問に答えると、今の状況を客観的に整理できます。</p>
+  </div>
+
+  <div class="warning-box">
+    この診断は情報提供を目的としています。結果はあくまで参考として、冷静な判断の助けにご活用ください。
+  </div>
+
+  <form id="check-form">
+
+    <div class="section-title">スマホ・連絡の変化</div>
+
+    <div class="question-card">
+      <div class="question-text">スマホを伏せて置く・常に持ち歩くようになった</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q1" value="10" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q1" value="5"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q1" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">LINEや通知を見せなくなった・スマホ画面を隠すようになった</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q2" value="10" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q2" value="5"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q2" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">スマホのパスワードを変えた・新しく設定した</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q3" value="8" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q3" value="4"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q3" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">トイレや別室でこっそり電話・メッセージをするようになった</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q4" value="8" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q4" value="4"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q4" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="section-title">行動・時間の変化</div>
+
+    <div class="question-card">
+      <div class="question-text">帰宅時間が遅くなった・残業が急に増えた</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q5" value="8" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q5" value="4"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q5" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">休日に理由がはっきりしない外出・一人行動が増えた</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q6" value="10" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q6" value="5"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q6" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">出張・泊まりが急に増えた、または予定を事前に言わなくなった</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q7" value="8" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q7" value="4"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q7" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="section-title">外見・お金の変化</div>
+
+    <div class="question-card">
+      <div class="question-text">急に外見に気を使い始めた・服や下着を新調した</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q8" value="6" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q8" value="3"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q8" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">使途不明の出費・ATM引き出しが増えた</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q9" value="6" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q9" value="3"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q9" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">香水・整髪料を急に使い始めた、または変えた</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q10" value="5" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q10" value="2"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q10" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="section-title">態度・関係性の変化</div>
+
+    <div class="question-card">
+      <div class="question-text">性生活が急に減った、または急に増えた</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q11" value="6" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q11" value="3"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q11" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">会話が減った・目を合わせなくなった・そっけなくなった</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q12" value="4" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q12" value="2"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q12" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">些細なことで怒る・指摘すると逆ギレするようになった</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q13" value="5" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q13" value="2"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q13" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">「好きだよ」「ありがとう」などの言葉や愛情表現が減った</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q14" value="4" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q14" value="2"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q14" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">以前は共有していた予定・居場所を教えてくれなくなった</div>
+      <div class="options">
+        <label class="option-label"><input type="radio" name="q15" value="6" required><span class="option-btn">はい</span></label>
+        <label class="option-label"><input type="radio" name="q15" value="3"><span class="option-btn">最近そう感じる</span></label>
+        <label class="option-label"><input type="radio" name="q15" value="0"><span class="option-btn">いいえ</span></label>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="submit-btn">診断する</button>
+      <p class="submit-note">回答内容は保存・送信されません</p>
+    </div>
+
+  </form>
+
+  <!-- 結果エリア -->
+  <div id="result">
+    <div class="result-header" id="result-header">
+      <div class="score-label">SUSPICION SCORE</div>
+      <div class="score-number" id="score-display">0<span>点</span></div>
+      <div class="score-title" id="score-title"></div>
+    </div>
+
+    <div class="result-body" id="result-body"></div>
+
+    <div class="paid-teaser" id="paid-section">
+      <h3>▼ 詳細レポートで確認できること</h3>
+      <ul>
+        <li>今回の回答で特に気になった兆候の詳細解説</li>
+        <li>違法にならない証拠の集め方リスト</li>
+        <li>さりげなく事実確認する方法（相手に気づかれずに）</li>
+        <li>問いただすときの具体的なセリフ例</li>
+        <li>探偵に頼むべきタイミングと費用相場</li>
+        <li>慰謝料・離婚を見据えた準備の始め方</li>
+      </ul>
+      <a href="#" class="paid-btn">詳細レポートを見る（980円）</a>
+      <p class="paid-price">※ noteにて販売。購入後すぐに読めます。</p>
+    </div>
+
+    <button class="reset-btn" onclick="resetForm()">最初からやり直す</button>
+  </div>
+
+</div>
+
+<footer>
+  この診断は情報提供目的のみです。浮気を断定するものではありません。<br>
+  深刻な状況では専門家（弁護士・探偵事務所）へのご相談をおすすめします。
+</footer>
+
+<script>
+  const MAX_RAW = 104;
+
+  const levels = [
+    {
+      min: 0, max: 30,
+      cls: 'level-low',
+      title: '今すぐ心配しなくていいかもしれません',
+      body: `
+        <p>今回の回答からは、浮気を強く示す兆候は見当たりませんでした。</p>
+        <p>ただ、診断を受けるほど不安を感じているのは事実です。その感覚を大切にしつつ、今は冷静に状況を見守ることをおすすめします。</p>
+
+        <h3>考えられる別の原因</h3>
+        <ul>
+          <li>仕事・プロジェクトのプレッシャーによるストレス</li>
+          <li>体調不良や精神的な疲れ</li>
+          <li>関係のマンネリ（慣れによるすれ違い）</li>
+          <li>あなた自身の不安が行動を過剰に読み取っている可能性</li>
+        </ul>
+
+        <h3>今できること（無料）</h3>
+        <ul>
+          <li>「最近どう？」という軽い会話から歩み寄ってみる</li>
+          <li>自分が何に対して不安を感じているかを紙に書き出してみる</li>
+          <li>問い詰めるより、一緒に過ごす時間を増やすことを試みる</li>
+        </ul>
+      `
+    },
+    {
+      min: 31, max: 60,
+      cls: 'level-mid',
+      title: 'いくつか注意すべき兆候があります',
+      body: `
+        <p>すべての変化が浮気を意味するわけではありませんが、複数の行動変化が重なっているのは事実です。</p>
+        <p>感情的に動く前に、まず状況を冷静に整理することが重要です。</p>
+
+        <h3>今すぐできる確認（無料範囲）</h3>
+        <ul>
+          <li>相手のSNSのフォロー・フォロワーに見知らぬ異性が増えていないか確認する</li>
+          <li>帰宅時間や外出頻度の変化に、具体的なパターンがないか記録する</li>
+          <li>クレジットカードの明細に見覚えのない店名・金額がないか確認する</li>
+        </ul>
+
+        <h3>やってはいけないこと</h3>
+        <ul>
+          <li>確証もなく「浮気してるんでしょ」と問い詰める（関係が悪化するだけ）</li>
+          <li>相手のスマホを無断で解除・覗こうとする（プライバシー侵害になる場合あり）</li>
+          <li>一人で抱え込んで感情的に消耗し続ける</li>
+        </ul>
+
+        <p style="margin-top:16px; color:#888; font-size:14px;">
+          証拠の集め方・話し合いの進め方は詳細レポートで確認できます。
+        </p>
+      `
+    },
+    {
+      min: 61, max: 80,
+      cls: 'level-high',
+      title: '複数の強い兆候が重なっています',
+      body: `
+        <p>今回の回答には、浮気の可能性を示す行動変化が複数含まれていました。</p>
+        <p>感情的になるのは当然ですが、今は冷静に「事実を確認すること」が最優先です。動き方を間違えると、後の法的手続きに不利になる可能性があります。</p>
+
+        <h3>今すぐすべきこと</h3>
+        <ul>
+          <li>気になった変化を日付・内容とともにメモに記録し始める</li>
+          <li>感情的な言動を相手に見せないようにする（警戒される）</li>
+          <li>信頼できる人間に状況を話しておく（証人として重要な場合がある）</li>
+        </ul>
+
+        <h3>やってはいけないこと</h3>
+        <ul>
+          <li>感情的に問い詰めて証拠隠滅のきっかけを与える</li>
+          <li>GPSトラッカーの無断設置・スマホの無断解錠（違法になる可能性）</li>
+          <li>SNSで状況を投稿・拡散する</li>
+        </ul>
+
+        <p style="margin-top:16px; color:#888; font-size:14px;">
+          法的に有効な証拠の集め方・探偵依頼の判断基準は詳細レポートに記載しています。
+        </p>
+      `
+    },
+    {
+      min: 81, max: 100,
+      cls: 'level-critical',
+      title: '深刻な可能性を否定できません',
+      body: `
+        <p>これだけ多くの行動変化が重なっている状況は、軽く見ることができません。</p>
+        <p>今あなたが感じている「おかしい」という感覚は、おそらく正しいです。ただし、感情のまま動くと状況が悪化します。今必要なのは「証拠を確保すること」と「選択肢を把握すること」の2つです。</p>
+
+        <h3>今すぐすべきこと</h3>
+        <ul>
+          <li>すべての変化を日時・場所・状況つきで記録し始める（証拠の土台になる）</li>
+          <li>共有の財産・口座の状況を把握しておく</li>
+          <li>冷静な状態を保ち、相手に気づかれないよう日常通りに過ごす</li>
+        </ul>
+
+        <h3>知っておくべきこと</h3>
+        <ul>
+          <li>慰謝料請求には「不貞行為の証拠」が必要（感情論だけでは動かない）</li>
+          <li>無断でのGPS・録音は違法になるケースがある</li>
+          <li>探偵の調査費用は5〜30万円が目安。証拠の証明力は高い</li>
+        </ul>
+
+        <p style="margin-top:16px; color:#888; font-size:14px;">
+          法的に有効な証拠収集の手順・弁護士・探偵に相談すべきタイミングは詳細レポートで確認できます。
+        </p>
+      `
+    }
+  ];
+
+  document.getElementById('check-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // スコア集計
+    let raw = 0;
+    for (let i = 1; i <= 15; i++) {
+      const selected = document.querySelector(`input[name="q${i}"]:checked`);
+      if (selected) raw += parseInt(selected.value);
+    }
+
+    // 100点満点に換算
+    const score = Math.round((raw / MAX_RAW) * 100);
+
+    // レベル判定
+    const level = levels.find(l => score >= l.min && score <= l.max) || levels[levels.length - 1];
+
+    // 結果表示
+    const resultEl = document.getElementById('result');
+    const headerEl = document.getElementById('result-header');
+    const scoreEl = document.getElementById('score-display');
+    const titleEl = document.getElementById('score-title');
+    const bodyEl = document.getElementById('result-body');
+
+    headerEl.className = 'result-header ' + level.cls;
+    scoreEl.innerHTML = score + '<span>点</span>';
+    titleEl.textContent = level.title;
+    bodyEl.innerHTML = level.body;
+
+    // 低スコアは有料セクションを非表示
+    const paidEl = document.getElementById('paid-section');
+    paidEl.style.display = score <= 30 ? 'none' : 'block';
+
+    // フォームを隠して結果を表示
+    document.getElementById('check-form').style.display = 'none';
+    resultEl.style.display = 'block';
+    resultEl.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  function resetForm() {
+    document.getElementById('check-form').reset();
+    document.getElementById('check-form').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
