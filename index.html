@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sのよくわからないもの置き場</title>
+  <meta name="description" content="暇なときに作ったものを置いています。特に意味はありません。" />
+  <meta property="og:title" content="Sのよくわからないもの置き場" />
+  <meta property="og:description" content="暇なときに作ったものを置いています。特に意味はありません。" />
+  <meta name="twitter:card" content="summary" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f0f;
+      color: #d0d0d0;
+      font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 64px 24px 100px;
+    }
+
+    /* ヘッダー */
+    header {
+      margin-bottom: 56px;
+    }
+
+    .site-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: #444;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #efefef;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .subtitle a {
+      color: #555;
+      text-underline-offset: 3px;
+    }
+
+    .subtitle a:hover {
+      color: #888;
+    }
+
+    /* ツール一覧 */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .tool-card {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.15s, background 0.15s;
+      cursor: pointer;
+    }
+
+    .tool-card:hover {
+      border-color: #3a3a3a;
+      background: #1a1a1a;
+    }
+
+    .tool-card:hover .card-arrow {
+      transform: translateX(4px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .tag-diagnosis {
+      background: #1a1020;
+      color: #a855f7;
+      border: 1px solid #3b1f5e;
+    }
+
+    .tag-tool {
+      background: #0d1a12;
+      color: #4ade80;
+      border: 1px solid #1a4a2e;
+    }
+
+    .tag-check {
+      background: #1a0d0d;
+      color: #f87171;
+      border: 1px solid #4a1a1a;
+    }
+
+    .card-arrow {
+      font-size: 16px;
+      color: #333;
+      transition: transform 0.15s;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #e8e8e8;
+      line-height: 1.4;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .card-meta {
+      font-size: 11px;
+      color: #3a3a3a;
+      margin-top: 4px;
+    }
+
+    /* 区切り */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: #333;
+      text-transform: uppercase;
+      margin-top: 48px;
+      margin-bottom: 4px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    /* Coming soon カード */
+    .tool-card.coming-soon {
+      opacity: 0.4;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .tool-card.coming-soon:hover {
+      border-color: #222;
+      background: #161616;
+    }
+
+    /* フッター */
+    footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a1a;
+      font-size: 12px;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer a {
+      color: #444;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #777;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 20px; }
+      .tools-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="site-label">ssankari1284</div>
+    <h1>Sのよくわからないもの置き場</h1>
+    <p class="subtitle">
+      暇なときに作ったものを置いています。特に意味はありません。<br>
+      note: <a href="https://note.com/ssankari1284" target="_blank" rel="noopener">ssankari1284</a>
+    </p>
+  </header>
+
+  <div class="section-label">公開中</div>
+
+  <div class="tools-grid">
+
+    <!-- 親ガチャ偏差値診断 -->
+    <a class="tool-card" href="https://ssankari1284-ux.github.io/oyagacha/" target="_blank" rel="noopener">
+      <div class="card-top">
+        <span class="card-tag tag-diagnosis">診断</span>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-title">親ガチャ偏差値診断</div>
+      <div class="card-desc">
+        生まれた環境を経済・文化・家族・遺伝の4軸で数値化します。
+        スタート地点がどこだったかを確認できます。
+      </div>
+      <div class="card-meta">診断時間：約3分</div>
+    </a>
+
+    <!-- 浮気兆候チェック -->
+    <a class="tool-card" href="../furin-check/">
+      <div class="card-top">
+        <span class="card-tag tag-check">チェック</span>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-title">浮気兆候チェック</div>
+      <div class="card-desc">
+        気になる行動変化を選ぶだけ。15問に答えると、
+        今の状況を客観的に整理できます。
+      </div>
+      <div class="card-meta">診断時間：約2分 · 匿名 · 登録不要</div>
+    </a>
+
+  </div>
+
+  <div class="section-label">準備中</div>
+
+  <div class="tools-grid">
+
+    <div class="tool-card coming-soon">
+      <div class="card-top">
+        <span class="card-tag tag-diagnosis">診断</span>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-title">coming soon</div>
+      <div class="card-desc">何かを作っています。</div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <span>Sのよくわからないもの置き場</span>
+  <span>
+    <a href="https://note.com/ssankari1284" target="_blank" rel="noopener">note</a>
+  </span>
+</footer>
+
+</body>
+</html>
