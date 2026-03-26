@@ -40,6 +40,17 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="label">人生の目標</div>
+        <div class="options goal-options">
+          <button class="opt selected" data-key="goal" data-val="wealth">富を築く</button>
+          <button class="opt" data-key="goal" data-val="family">幸せな家族</button>
+          <button class="opt" data-key="goal" data-val="longevity">健康長寿</button>
+          <button class="opt" data-key="goal" data-val="career">社会的成功</button>
+          <button class="opt" data-key="goal" data-val="freedom">自由な人生</button>
+        </div>
+      </div>
+
       <button id="start-btn" class="primary-btn">人生をはじめる</button>
     </div>
   </div>
@@ -55,37 +66,48 @@
           <span class="sl">健康</span>
           <div class="bar-wrap"><div class="bar-fill bar-health" id="bar-health"></div></div>
           <span class="sv" id="val-health">50</span>
+          <span class="stat-delta" id="delta-health"></span>
         </div>
         <div class="stat-row">
           <span class="sl">幸福</span>
           <div class="bar-wrap"><div class="bar-fill bar-happiness" id="bar-happiness"></div></div>
           <span class="sv" id="val-happiness">50</span>
+          <span class="stat-delta" id="delta-happiness"></span>
         </div>
         <div class="stat-row">
           <span class="sl">財産</span>
           <div class="bar-wrap"><div class="bar-fill bar-wealth" id="bar-wealth"></div></div>
           <span class="sv" id="val-wealth">50</span>
+          <span class="stat-delta" id="delta-wealth"></span>
         </div>
         <div class="stat-row">
           <span class="sl">縁</span>
           <div class="bar-wrap"><div class="bar-fill bar-social" id="bar-social"></div></div>
           <span class="sv" id="val-social">50</span>
+          <span class="stat-delta" id="delta-social"></span>
         </div>
       </div>
+      <div class="goal-box">
+        <div class="goal-label">目標</div>
+        <div id="goal-name" class="goal-name">-</div>
+      </div>
+    </div>
+
+    <div class="log-header">
+      <label class="filter-label">
+        <input type="checkbox" id="filter-check"> 重要イベントのみ表示
+      </label>
     </div>
 
     <div id="log-area"></div>
 
-    <!-- 実績通知 -->
     <div id="achievement-toast" class="achievement-toast"></div>
 
     <div class="bottom-bar">
-      <!-- 年間行動 -->
       <div id="action-area" class="action-area hidden">
         <div class="action-label">今年の行動（1つ選べます）</div>
         <div id="action-buttons" class="action-buttons"></div>
       </div>
-      <!-- ボタン行 -->
       <div class="btn-row">
         <button id="skip5-btn" class="skip-btn">5年スキップ</button>
         <button id="next-btn" class="primary-btn">次の年へ →</button>
@@ -98,6 +120,7 @@
     <div class="container">
       <h2 class="end-title">人生の幕が下りた</h2>
       <div id="end-summary"></div>
+      <div id="end-goal"></div>
       <div id="end-achievements"></div>
       <button id="restart-btn" class="primary-btn">もう一度生まれる</button>
     </div>
