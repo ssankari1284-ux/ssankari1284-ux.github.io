@@ -256,22 +256,186 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
+/* --- 選択肢カード --- */
+.choice-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.choice-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px 12px;
+  border: 2px solid #7a6b8a;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #7a6b8a;
+  font-weight: bold;
+  font-family: inherit;
+  transition: all 0.15s;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.choice-btn:hover {
+  background: #7a6b8a;
+  color: white;
+}
+
+.choice-followup {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #999;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* --- 年間行動エリア --- */
+.action-area {
+  margin-bottom: 10px;
+}
+
+.action-area.hidden {
+  display: none;
+}
+
+.action-label {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 7px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #777;
+  font-family: inherit;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  border-color: #7a6b8a;
+  color: #7a6b8a;
+}
+
+.action-btn.selected {
+  border-color: #7a6b8a;
+  background: #7a6b8a;
+  color: white;
+  font-weight: bold;
+}
+
+.action-btn.used {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --- ボタン行 --- */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.skip-btn {
+  padding: 14px 16px;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: #888;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.skip-btn:hover {
+  border-color: #aaa;
+  color: #555;
+}
+
+.skip-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-row .primary-btn {
+  flex: 1;
+  margin-top: 0;
+}
+
 /* --- 下部ボタンエリア --- */
 .bottom-bar {
   position: sticky;
   bottom: 0;
   background: white;
   border-top: 1px solid #e0d8cc;
-  padding: 14px 20px;
+  padding: 12px 20px;
   box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
 }
 
-.bottom-bar .primary-btn {
-  margin-top: 0;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
+/* --- 実績通知 --- */
+.achievement-toast {
+  position: fixed;
+  top: 70px;
+  right: 16px;
+  background: #2d2d2d;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 100;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  max-width: 220px;
+}
+
+.achievement-toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast-label {
+  font-size: 0.7rem;
+  color: #f0ad4e;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+}
+
+.toast-name {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.toast-desc {
+  font-size: 0.78rem;
+  color: #bbb;
 }
 
 /* --- 終了画面 --- */
@@ -324,6 +488,41 @@ body {
   line-height: 1.8;
   margin-top: 8px;
   white-space: pre-line;
+}
+
+/* --- 終了画面 実績一覧 --- */
+.achievements-section-title {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: 12px;
+  margin-top: 4px;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.achievement-badge {
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border-left: 3px solid #f0ad4e;
+}
+
+.badge-name {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #2d2d2d;
+  margin-bottom: 3px;
+}
+
+.badge-desc {
+  font-size: 0.78rem;
+  color: #aaa;
 }
 
 #end-screen .primary-btn {

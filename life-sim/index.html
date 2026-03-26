@@ -76,8 +76,20 @@
 
     <div id="log-area"></div>
 
+    <!-- 実績通知 -->
+    <div id="achievement-toast" class="achievement-toast"></div>
+
     <div class="bottom-bar">
-      <button id="next-btn" class="primary-btn">次の年へ →</button>
+      <!-- 年間行動 -->
+      <div id="action-area" class="action-area hidden">
+        <div class="action-label">今年の行動（1つ選べます）</div>
+        <div id="action-buttons" class="action-buttons"></div>
+      </div>
+      <!-- ボタン行 -->
+      <div class="btn-row">
+        <button id="skip5-btn" class="skip-btn">5年スキップ</button>
+        <button id="next-btn" class="primary-btn">次の年へ →</button>
+      </div>
     </div>
   </div>
 
@@ -86,6 +98,7 @@
     <div class="container">
       <h2 class="end-title">人生の幕が下りた</h2>
       <div id="end-summary"></div>
+      <div id="end-achievements"></div>
       <button id="restart-btn" class="primary-btn">もう一度生まれる</button>
     </div>
   </div>

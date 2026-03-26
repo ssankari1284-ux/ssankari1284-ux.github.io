@@ -1,3 +1,5 @@
+'use strict';
+
 // ===========================
 // イベントデータ
 // ===========================
@@ -91,7 +93,7 @@ const EVENTS = [
   },
   {
     id: 'sports_day', ageMin: 8, ageMax: 11, probability: 0.3,
-    text: '運動会でリレーの選手に選ばれた。全力で走り、チームは見事3位だった。',
+    text: '運動会でリレーの選手に選ばれた。全力で走り、チームは3位だった。',
     tone: 'positive',
     effects: { health: 5, happiness: 15, wealth: 0, social: 10 }
   },
@@ -180,10 +182,16 @@ const EVENTS = [
     effects: { health: 0, happiness: 12, wealth: -5, social: 10 }
   },
   {
+    // 選択肢あり
     id: 'exam_pressure', ageMin: 15, ageMax: 15, once: true, probability: 1.0,
-    text: '高校受験が近づき、毎晩遅くまで勉強した。プレッシャーで胃が痛くなった。',
-    tone: 'negative',
-    effects: { health: -5, happiness: -10, wealth: 0, social: -5 }
+    text: '高校受験が近づいた。どう立ち向かうか、自分なりに考えた。',
+    tone: 'neutral',
+    effects: { health: -2, happiness: -3, wealth: 0, social: 0 },
+    choices: [
+      { text: '猛勉強で乗り越える', followup: '睡眠を削って参考書と向き合った。', effects: { wealth: 10, health: -6, happiness: -10 } },
+      { text: '推薦入試を狙う', followup: '先生との関係を大切にして推薦をもらえた。', effects: { social: 10, happiness: 5, wealth: 3 } },
+      { text: 'マイペースで挑む', followup: '自分のリズムを守って挑んだ。', effects: { health: 3, happiness: 8 } }
+    ]
   },
 
   // --- 高校生（16〜18歳）---
@@ -280,10 +288,16 @@ const EVENTS = [
     effects: { health: 0, happiness: 12, wealth: 0, social: 5 }
   },
   {
-    id: 'job_hunt', ageMin: 22, ageMax: 22, once: true, probability: 0.7,
-    text: '就職活動に苦労した。何社も落ち、自分の価値を問い続けた日々だった。',
-    tone: 'negative',
-    effects: { health: -5, happiness: -12, wealth: 0, social: 5 }
+    // 選択肢あり
+    id: 'job_hunt', ageMin: 22, ageMax: 22, once: true, probability: 0.8,
+    text: '就職先を決める時期が来た。何社も回り、ようやく内定が出た。',
+    tone: 'neutral',
+    effects: { health: -3, happiness: -5, wealth: 0, social: 0 },
+    choices: [
+      { text: '大企業の安定した道を選ぶ', followup: '安定した収入を得た。少し窮屈な気もした。', effects: { wealth: 15, happiness: 3, social: 3 } },
+      { text: 'ベンチャーに飛び込む', followup: '毎日が刺激的だった。体はきつかった。', effects: { wealth: -5, happiness: 18, social: 10, health: -5 } },
+      { text: '公務員を目指す', followup: '試験勉強に励み、安定した仕事を得た。', effects: { wealth: 8, happiness: 5, social: 3 } }
+    ]
   },
 
   // --- 社会人スタート（22〜25歳）---
@@ -327,22 +341,37 @@ const EVENTS = [
     effects: { health: -3, happiness: 15, wealth: 20, social: 8 }
   },
   {
+    // 選択肢あり
     id: 'job_change', ageMin: 25, ageMax: 40, probability: 0.15,
-    text: '転職した。新しい環境に緊張しつつ、リセットできた気がした。',
+    text: '転職のチャンスが来た。悩んだ末、動くことにした。',
     tone: 'neutral',
-    effects: { health: 5, happiness: 8, wealth: 10, social: -5 }
+    effects: { health: 3, happiness: 3, wealth: 0, social: 0 },
+    choices: [
+      { text: '給料アップを優先する', followup: '収入は上がったが、激務だった。', effects: { wealth: 18, health: -8, happiness: -5 } },
+      { text: 'やりがいを優先する', followup: '仕事が本当に好きになった。', effects: { happiness: 18, social: 8, wealth: -3 } }
+    ]
   },
   {
+    // 選択肢あり
     id: 'marriage', ageMin: 26, ageMax: 36, once: true, probability: 0.45,
-    text: '結婚した。誓いの言葉を言うとき、声が震えた。',
+    text: '結婚することになった。人生の大きな決断だった。',
     tone: 'milestone',
-    effects: { health: 5, happiness: 30, wealth: -10, social: 20 }
+    effects: { health: 3, happiness: 15, wealth: -8, social: 10 },
+    choices: [
+      { text: '安定感のある人を選んだ', followup: '穏やかで確かな毎日が続いた。', effects: { wealth: 8, happiness: 10, health: 3 } },
+      { text: '情熱的な人を選んだ', followup: '毎日がドラマチックだった。', effects: { happiness: 20, social: 10, wealth: -5, health: -3 } }
+    ]
   },
   {
+    // 選択肢あり
     id: 'child_born', ageMin: 27, ageMax: 38, once: true, probability: 0.4,
-    text: '子供が生まれた。この小さな命の重さに、涙が止まらなかった。',
+    text: '子供が生まれた。この小さな命の重さに、覚悟が決まった。',
     tone: 'milestone',
-    effects: { health: -3, happiness: 35, wealth: -20, social: 15 }
+    effects: { health: -3, happiness: 20, wealth: -18, social: 8 },
+    choices: [
+      { text: '厳しくも愛情深く育てる', followup: '勉強と礼儀を大切にして育てた。', effects: { social: 5, wealth: -5, happiness: -5 } },
+      { text: 'のびのびと自由に育てる', followup: '子供の個性を尊重して育てた。', effects: { happiness: 12, social: 8, wealth: -3 } }
+    ]
   },
   {
     id: 'house_buy', ageMin: 30, ageMax: 42, once: true, probability: 0.25,
@@ -363,6 +392,17 @@ const EVENTS = [
     text: '新しい趣味を見つけた。週末が待ち遠しくなった。',
     tone: 'positive',
     effects: { health: 5, happiness: 18, wealth: -5, social: 8 }
+  },
+  {
+    // 選択肢あり（新規）
+    id: 'life_crossroads', ageMin: 30, ageMax: 38, once: true, probability: 0.7,
+    text: '人生の岐路に立った気がした。このまま続けるか、変えるか。',
+    tone: 'neutral',
+    effects: { health: 0, happiness: 0, wealth: 0, social: 0 },
+    choices: [
+      { text: '今の道を信じて続ける', followup: '地に足のついた安定を選んだ。', effects: { wealth: 8, happiness: 5, social: 5 } },
+      { text: '思い切って環境を変える', followup: 'リスクを取って新しい一歩を踏み出した。', effects: { happiness: 15, social: 10, health: -5, wealth: -8 } }
+    ]
   },
 
   // --- 中年期（38〜55歳）---
@@ -393,10 +433,15 @@ const EVENTS = [
     effects: { health: 0, happiness: -8, wealth: 0, social: -10 }
   },
   {
+    // 選択肢あり
     id: 'parent_sick', ageMin: 45, ageMax: 62, probability: 0.3,
-    text: '親が体調を崩した。遠くに住んでいると、心配が膨らむばかりだった。',
+    text: '親の体調が悪化した。どう向き合うか、真剣に考えた。',
     tone: 'negative',
-    effects: { health: -3, happiness: -15, wealth: -10, social: -5 }
+    effects: { health: -2, happiness: -8, wealth: -5, social: 0 },
+    choices: [
+      { text: '仕事を調整して自分で支える', followup: '親のそばで支えた。自分も消耗したが後悔はない。', effects: { social: 10, happiness: -5, wealth: -8, health: -5 } },
+      { text: '信頼できる施設に任せる', followup: 'プロに委ねた。罪悪感はあったが楽になった。', effects: { wealth: -12, happiness: 5 } }
+    ]
   },
   {
     id: 'sport_habit', ageMin: 40, ageMax: 60, once: true, probability: 0.2,
@@ -409,6 +454,17 @@ const EVENTS = [
     text: '新しい恋をした。この年齢でもこんな気持ちになれるとは思わなかった。',
     tone: 'positive',
     effects: { health: 0, happiness: 22, wealth: 0, social: 10 }
+  },
+  {
+    // 選択肢あり（新規）
+    id: 'savings_plan', ageMin: 43, ageMax: 50, once: true, probability: 0.7,
+    text: '老後のことを真剣に考えはじめた。どう備えるか。',
+    tone: 'neutral',
+    effects: { health: 0, happiness: 0, wealth: 0, social: 0 },
+    choices: [
+      { text: '貯蓄・投資を始める', followup: '将来への備えを固めた。', effects: { wealth: 12, happiness: -3 } },
+      { text: '今の生活を豊かにする', followup: '今この瞬間を精一杯楽しんだ。', effects: { happiness: 15, wealth: -8 } }
+    ]
   },
 
   // --- 初老（50〜65歳）---
@@ -437,10 +493,15 @@ const EVENTS = [
     effects: { health: 0, happiness: 20, wealth: 0, social: 15 }
   },
   {
+    // 選択肢あり
     id: 'retirement', ageMin: 60, ageMax: 65, once: true, probability: 0.8,
     text: '定年退職した。長い労働生活にひとつの区切りがついた。',
     tone: 'milestone',
-    effects: { health: 5, happiness: 15, wealth: -10, social: -5 }
+    effects: { health: 3, happiness: 8, wealth: -8, social: -3 },
+    choices: [
+      { text: '趣味と旅行で自由を満喫する', followup: '念願だった自由な時間を満喫した。', effects: { happiness: 18, health: 5, wealth: -8 } },
+      { text: '再雇用・再就職する', followup: 'まだ現役でいられると実感できた。', effects: { wealth: 12, social: 8, health: -3, happiness: 5 } }
+    ]
   },
 
   // --- 老年期（65〜80歳）---
@@ -490,7 +551,7 @@ const EVENTS = [
     effects: { health: 0, happiness: 12, wealth: 0, social: 8 }
   },
 
-  // --- ランダムイベント（どの年代でも）---
+  // --- ランダムイベント ---
   {
     id: 'accident', ageMin: 15, ageMax: 79, probability: 0.018,
     text: '事故に巻き込まれた。軽傷で済んだが、命の大切さを改めて感じた。',
@@ -519,6 +580,93 @@ const EVENTS = [
 
 
 // ===========================
+// 年間行動データ
+// ===========================
+
+const ACTIONS_DATA = {
+  child: [
+    { id: 'study',   text: '勉強する',    hint: '財産+',  effects: { wealth: 3, happiness: -3 } },
+    { id: 'play',    text: '外で遊ぶ',    hint: '健康+',  effects: { health: 8, happiness: 8 } },
+    { id: 'friends', text: '友達と遊ぶ',  hint: '縁+',    effects: { happiness: 6, social: 8 } }
+  ],
+  teen: [
+    { id: 'study',    text: '勉強する',        hint: '財産+',    effects: { wealth: 5, happiness: -5 } },
+    { id: 'club',     text: '部活に打ち込む',  hint: '健康・縁+', effects: { health: 8, social: 6, happiness: 3 } },
+    { id: 'parttime', text: 'バイトする',      hint: '財産+',    effects: { wealth: 10, happiness: -3, health: -3 } },
+    { id: 'friends',  text: '友達と遊ぶ',      hint: '幸福・縁+', effects: { happiness: 10, social: 8, wealth: -3 } }
+  ],
+  adult: [
+    { id: 'work',     text: '仕事を頑張る',      hint: '財産+',    effects: { wealth: 10, health: -5, happiness: -3 } },
+    { id: 'exercise', text: '運動する',          hint: '健康+',    effects: { health: 12, happiness: 5 } },
+    { id: 'hobby',    text: '趣味を楽しむ',      hint: '幸福+',    effects: { happiness: 12, wealth: -3 } },
+    { id: 'social',   text: '人間関係を深める',  hint: '縁+',      effects: { social: 12, happiness: 5 } }
+  ],
+  elder: [
+    { id: 'exercise', text: '運動する',      hint: '健康+',    effects: { health: 8, happiness: 5 } },
+    { id: 'hobby',    text: '趣味を楽しむ',  hint: '幸福+',    effects: { happiness: 12, wealth: -3 } },
+    { id: 'family',   text: '家族と過ごす',  hint: '幸福・縁+', effects: { happiness: 10, social: 8 } },
+    { id: 'rest',     text: 'のんびり休む',  hint: '健康+',    effects: { health: 8, happiness: 6 } }
+  ]
+};
+
+function getActionsForAge(age) {
+  if (age < 7)  return [];
+  if (age < 13) return ACTIONS_DATA.child;
+  if (age < 19) return ACTIONS_DATA.teen;
+  if (age < 61) return ACTIONS_DATA.adult;
+  return ACTIONS_DATA.elder;
+}
+
+
+// ===========================
+// 実績データ
+// ===========================
+
+const ACHIEVEMENT_DEFS = [
+  { id: 'long_life',        name: '長寿',       desc: '80歳まで生きた' },
+  { id: 'early_death',      name: '短命',       desc: '健康が尽きて亡くなった' },
+  { id: 'wealthy',          name: '富豪',       desc: '財産が85を超えた' },
+  { id: 'happy_max',        name: '幸福者',     desc: '幸福が85を超えた' },
+  { id: 'healthy_max',      name: '健康優良',   desc: '健康が85を超えた' },
+  { id: 'well_connected',   name: '人脈王',     desc: '縁が85を超えた' },
+  { id: 'all_balanced',     name: 'バランス型', desc: '全ステータスが60以上' },
+  { id: 'married',          name: '伴侶',       desc: '結婚した' },
+  { id: 'parent',           name: '親',         desc: '子供が生まれた' },
+  { id: 'grandparent',      name: '祖父母',     desc: '孫が生まれた' },
+  { id: 'promoted',         name: '出世頭',     desc: '管理職になった' },
+  { id: 'homeowner',        name: 'マイホーム', desc: '家を購入した' },
+  { id: 'survivor',         name: '生存者',     desc: '大きな病気・事故を乗り越えた' },
+  { id: 'rags_to_riches',   name: '逆転人生',   desc: '貧しい生まれで財産60以上になった' },
+];
+
+function checkAchievements() {
+  const checks = {
+    wealthy:        () => state.stats.wealth    >= 85,
+    happy_max:      () => state.stats.happiness >= 85,
+    healthy_max:    () => state.stats.health    >= 85,
+    well_connected: () => state.stats.social    >= 85,
+    all_balanced:   () => Object.values(state.stats).every(v => v >= 60),
+    married:        () => state.triggered.has('marriage'),
+    parent:         () => state.triggered.has('child_born'),
+    grandparent:    () => state.triggered.has('grandchild'),
+    promoted:       () => state.triggered.has('manager'),
+    homeowner:      () => state.triggered.has('house_buy'),
+    survivor:       () => state.triggered.has('accident') || state.triggered.has('serious_illness'),
+    rags_to_riches: () => state.background === 'poor' && state.stats.wealth >= 60,
+  };
+
+  let delay = 0;
+  for (const [id, check] of Object.entries(checks)) {
+    if (!state.achievements.has(id) && check()) {
+      state.achievements.add(id);
+      setTimeout(() => showAchievementToast(id), delay);
+      delay += 1600;
+    }
+  }
+}
+
+
+// ===========================
 // ゲームの状態
 // ===========================
 
@@ -539,7 +687,10 @@ function initState(gender, background, location) {
     stats: { ...initialStats[background] },
     triggered: new Set(),
     alive: true,
-    lifeLog: []
+    lifeLog: [],
+    pendingChoices: [],
+    actionUsed: false,
+    achievements: new Set()
   };
 }
 
@@ -548,22 +699,19 @@ function clamp(val) {
 }
 
 function applyEffects(effects) {
+  if (!effects) return;
   ['health', 'happiness', 'wealth', 'social'].forEach(key => {
-    if (effects[key]) {
-      state.stats[key] = clamp(state.stats[key] + effects[key]);
-    }
+    if (effects[key]) state.stats[key] = clamp(state.stats[key] + effects[key]);
   });
 }
 
 function checkCondition(event) {
   const c = event.condition;
   if (!c) return true;
-
-  if (c.gender      && c.gender      !== state.gender)      return false;
-  if (c.background  && c.background  !== state.background)  return false;
-  if (c.location    && c.location    !== state.location)     return false;
-  if (c.notBackground && c.notBackground === state.background) return false;
-
+  if (c.gender        && c.gender        !== state.gender)      return false;
+  if (c.background    && c.background    !== state.background)  return false;
+  if (c.location      && c.location      !== state.location)    return false;
+  if (c.notBackground && c.notBackground === state.background)  return false;
   const s = state.stats;
   if (c.minHealth    !== undefined && s.health    < c.minHealth)    return false;
   if (c.maxHealth    !== undefined && s.health    > c.maxHealth)    return false;
@@ -573,7 +721,6 @@ function checkCondition(event) {
   if (c.maxWealth    !== undefined && s.wealth    > c.maxWealth)    return false;
   if (c.minSocial    !== undefined && s.social    < c.minSocial)    return false;
   if (c.maxSocial    !== undefined && s.social    > c.maxSocial)    return false;
-
   return true;
 }
 
@@ -583,13 +730,17 @@ function getEventsForAge(age) {
     if (ev.once && state.triggered.has(ev.id)) return false;
     if (!checkCondition(ev)) return false;
     if (Math.random() > ev.probability) return false;
-
     if (ev.once) state.triggered.add(ev.id);
     return true;
   });
 }
 
-function advanceYear() {
+
+// ===========================
+// ゲームロジック
+// ===========================
+
+function advanceYear(skipMode) {
   const age = state.age;
   const events = getEventsForAge(age);
 
@@ -597,28 +748,28 @@ function advanceYear() {
   if (age >= 70) state.stats.health = clamp(state.stats.health - 3);
   else if (age >= 60) state.stats.health = clamp(state.stats.health - 1);
 
-  // イベントのステータス反映
+  // 全イベントのベース効果を適用
   events.forEach(ev => applyEffects(ev.effects));
 
-  // ログに記録
-  state.lifeLog.push({ age, events });
-
-  // 死亡判定
-  if (state.stats.health <= 0) {
-    state.alive = false;
-    return 'death';
+  if (skipMode) {
+    // スキップ中: 選択肢は先頭を自動選択
+    events.filter(ev => ev.choices).forEach(ev => applyEffects(ev.choices[0].effects));
+  } else {
+    // 選択肢ありのイベントをキューに追加
+    state.pendingChoices.push(...events.filter(ev => ev.choices));
   }
 
-  // 80歳で終了
-  if (age >= 80) return 'end';
+  state.lifeLog.push({ age, events, skipMode: !!skipMode });
 
+  if (state.stats.health <= 0) { state.alive = false; return 'death'; }
+  if (age >= 80) return 'end';
   state.age++;
   return 'continue';
 }
 
 
 // ===========================
-// UI 操作
+// UI関数
 // ===========================
 
 function showScreen(id) {
@@ -635,7 +786,40 @@ function updateStats() {
   });
 }
 
-function addYearToLog(age, events) {
+function renderActions() {
+  const actions = getActionsForAge(state.age);
+  const area = document.getElementById('action-area');
+  const btns = document.getElementById('action-buttons');
+  btns.innerHTML = '';
+
+  if (actions.length === 0) {
+    area.classList.add('hidden');
+    return;
+  }
+
+  area.classList.remove('hidden');
+  actions.forEach(action => {
+    const btn = document.createElement('button');
+    btn.className = 'action-btn';
+    btn.textContent = action.text + '（' + action.hint + '）';
+    btn.onclick = () => selectAction(action, btn);
+    btns.appendChild(btn);
+  });
+}
+
+function selectAction(action, clickedBtn) {
+  if (state.actionUsed) return;
+  state.actionUsed = true;
+  applyEffects(action.effects);
+  updateStats();
+
+  document.querySelectorAll('.action-btn').forEach(b => {
+    b.classList.add('used');
+    if (b === clickedBtn) b.classList.add('selected');
+  });
+}
+
+function addYearToLog(age, events, skipMode) {
   const logArea = document.getElementById('log-area');
   const block = document.createElement('div');
   block.className = 'year-block';
@@ -655,23 +839,96 @@ function addYearToLog(age, events) {
       const card = document.createElement('div');
       card.className = 'event-card ' + (ev.tone || 'neutral');
       card.textContent = ev.text;
+
+      if (ev.choices && !skipMode) {
+        // 選択肢ボタンを表示
+        card.id = 'choice-card-' + ev.id;
+        const btnArea = document.createElement('div');
+        btnArea.className = 'choice-buttons';
+        ev.choices.forEach((choice, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'choice-btn';
+          btn.textContent = choice.text;
+          btn.onclick = () => resolveChoice(ev, i);
+          btnArea.appendChild(btn);
+        });
+        card.appendChild(btnArea);
+      } else if (ev.choices && skipMode) {
+        // スキップ中: 自動選択の結果を表示
+        const followup = document.createElement('div');
+        followup.className = 'choice-followup';
+        followup.textContent = '→ ' + (ev.choices[0].followup || ev.choices[0].text);
+        card.appendChild(followup);
+      }
+
       block.appendChild(card);
     });
   }
 
   logArea.appendChild(block);
-  setTimeout(() => block.scrollIntoView({ behavior: 'smooth', block: 'end' }), 50);
+  return block;
+}
+
+function resolveChoice(event, choiceIndex) {
+  const choice = event.choices[choiceIndex];
+  applyEffects(choice.effects);
+  updateStats();
+
+  // カードを更新（ボタンをフォローアップテキストに置換）
+  const card = document.getElementById('choice-card-' + event.id);
+  if (card) {
+    const btnArea = card.querySelector('.choice-buttons');
+    if (btnArea) btnArea.remove();
+    if (choice.followup) {
+      const followup = document.createElement('div');
+      followup.className = 'choice-followup';
+      followup.textContent = '→ ' + choice.followup;
+      card.appendChild(followup);
+    }
+  }
+
+  // キューから除外
+  const idx = state.pendingChoices.indexOf(event);
+  if (idx > -1) state.pendingChoices.splice(idx, 1);
+
+  // すべての選択が終わったら次へ進めるようにする
+  if (state.pendingChoices.length === 0) {
+    document.getElementById('next-btn').disabled = false;
+    document.getElementById('skip5-btn').disabled = false;
+    state.actionUsed = false;
+    renderActions();
+    checkAchievements();
+  }
+}
+
+let toastTimer = null;
+function showAchievementToast(id) {
+  const def = ACHIEVEMENT_DEFS.find(a => a.id === id);
+  if (!def) return;
+  const toast = document.getElementById('achievement-toast');
+  toast.innerHTML =
+    '<div class="toast-label">実績解除</div>' +
+    '<div class="toast-name">' + def.name + '</div>' +
+    '<div class="toast-desc">' + def.desc + '</div>';
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 function showEndScreen(cause) {
   showScreen('end-screen');
-
   const s = state.stats;
-  const age = state.lifeLog[state.lifeLog.length - 1].age;
+  const last = state.lifeLog[state.lifeLog.length - 1];
+  const age = last ? last.age : state.age;
   const score = Math.round((s.health + s.happiness + s.wealth + s.social) / 4);
 
-  let rating, comment;
+  if (cause === 'death') {
+    state.achievements.add('early_death');
+  } else {
+    state.achievements.add('long_life');
+  }
 
+  let rating, comment;
   if (cause === 'death') {
     rating = '波乱の生涯';
     comment = age + '歳で人生の幕が閉じた。\n健康が尽き、静かに逝ってしまった。\nそれでも、ひとつの命が確かにここにあった。';
@@ -709,17 +966,86 @@ function showEndScreen(cause) {
       <div class="summary-comment">${comment}</div>
     </div>
   `;
+
+  // 実績表示
+  const unlocked = ACHIEVEMENT_DEFS.filter(a => state.achievements.has(a.id));
+  const achSection = document.getElementById('end-achievements');
+  if (unlocked.length > 0) {
+    achSection.innerHTML =
+      '<div class="achievements-section-title">獲得した実績（' + unlocked.length + '/' + ACHIEVEMENT_DEFS.length + '）</div>' +
+      '<div class="achievements-grid">' +
+      unlocked.map(a =>
+        '<div class="achievement-badge">' +
+        '<div class="badge-name">' + a.name + '</div>' +
+        '<div class="badge-desc">' + a.desc + '</div>' +
+        '</div>'
+      ).join('') +
+      '</div>';
+  } else {
+    achSection.innerHTML = '';
+  }
 }
 
-function doNextYear() {
-  const result = advanceYear();
+
+// ===========================
+// ゲームフロー
+// ===========================
+
+function doNextYear(skipMode) {
+  const result = advanceYear(skipMode);
   const last = state.lifeLog[state.lifeLog.length - 1];
-  addYearToLog(last.age, last.events);
+  const block = addYearToLog(last.age, last.events, skipMode);
+
+  if (!skipMode) {
+    setTimeout(() => block.scrollIntoView({ behavior: 'smooth', block: 'end' }), 50);
+  }
+
   updateStats();
 
   if (result === 'death' || result === 'end') {
     document.getElementById('next-btn').disabled = true;
-    setTimeout(() => showEndScreen(result), 1200);
+    document.getElementById('skip5-btn').disabled = true;
+    document.getElementById('action-area').classList.add('hidden');
+    const delay = (state.pendingChoices.length > 0) ? 2000 : 1200;
+    setTimeout(() => showEndScreen(result), delay);
+    return result;
+  }
+
+  if (state.pendingChoices.length > 0 && !skipMode) {
+    // 選択待ち: 次へボタンを無効化
+    document.getElementById('next-btn').disabled = true;
+    document.getElementById('skip5-btn').disabled = true;
+  } else if (!skipMode) {
+    state.actionUsed = false;
+    renderActions();
+    checkAchievements();
+  }
+
+  return result;
+}
+
+function doSkip(years) {
+  // 未解決の選択肢を自動解決
+  state.pendingChoices.forEach(ev => applyEffects(ev.choices[0].effects));
+  state.pendingChoices = [];
+
+  let result = 'continue';
+  for (let i = 0; i < years && result === 'continue'; i++) {
+    result = doNextYear(true);
+  }
+
+  // 最後のブロックまでスクロール
+  setTimeout(() => {
+    const logArea = document.getElementById('log-area');
+    if (logArea.lastElementChild) {
+      logArea.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, 100);
+
+  if (result === 'continue') {
+    state.actionUsed = false;
+    renderActions();
+    checkAchievements();
   }
 }
 
@@ -728,7 +1054,6 @@ function doNextYear() {
 // イベントリスナー
 // ===========================
 
-// 選択ボタン
 document.querySelectorAll('.opt').forEach(btn => {
   btn.addEventListener('click', () => {
     const key = btn.dataset.key;
@@ -737,7 +1062,6 @@ document.querySelectorAll('.opt').forEach(btn => {
   });
 });
 
-// スタートボタン
 document.getElementById('start-btn').addEventListener('click', () => {
   const gender     = document.querySelector('.opt.selected[data-key="gender"]').dataset.val;
   const background = document.querySelector('.opt.selected[data-key="background"]').dataset.val;
@@ -745,19 +1069,17 @@ document.getElementById('start-btn').addEventListener('click', () => {
 
   document.getElementById('log-area').innerHTML = '';
   document.getElementById('next-btn').disabled = false;
+  document.getElementById('skip5-btn').disabled = false;
+  document.getElementById('end-achievements').innerHTML = '';
 
   initState(gender, background, location);
   showScreen('game-screen');
   updateStats();
 
-  // 誕生イベント（0歳）を自動表示
-  doNextYear();
+  // 0歳（誕生）を自動表示
+  doNextYear(false);
 });
 
-// 次の年へボタン
-document.getElementById('next-btn').addEventListener('click', doNextYear);
-
-// もう一度ボタン
-document.getElementById('restart-btn').addEventListener('click', () => {
-  showScreen('setup-screen');
-});
+document.getElementById('next-btn').addEventListener('click', () => doNextYear(false));
+document.getElementById('skip5-btn').addEventListener('click', () => doSkip(5));
+document.getElementById('restart-btn').addEventListener('click', () => showScreen('setup-screen'));
