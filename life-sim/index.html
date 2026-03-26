@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人生シミュレーター</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- セットアップ画面 -->
+  <div id="setup-screen" class="screen active">
+    <div class="container">
+      <h1 class="title">人生シミュレーター</h1>
+      <p class="subtitle">あなたの設定を選んでください</p>
+
+      <div class="form-group">
+        <div class="label">性別</div>
+        <div class="options">
+          <button class="opt selected" data-key="gender" data-val="male">男性</button>
+          <button class="opt" data-key="gender" data-val="female">女性</button>
+          <button class="opt" data-key="gender" data-val="other">その他</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">家庭環境</div>
+        <div class="options">
+          <button class="opt" data-key="background" data-val="rich">裕福</button>
+          <button class="opt selected" data-key="background" data-val="normal">普通</button>
+          <button class="opt" data-key="background" data-val="poor">貧しい</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">出身地</div>
+        <div class="options">
+          <button class="opt selected" data-key="location" data-val="urban">都市</button>
+          <button class="opt" data-key="location" data-val="rural">地方</button>
+        </div>
+      </div>
+
+      <button id="start-btn" class="primary-btn">人生をはじめる</button>
+    </div>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div id="game-screen" class="screen">
+    <div class="top-bar">
+      <div class="age-box">
+        <span id="current-age">0</span><span class="age-unit">歳</span>
+      </div>
+      <div class="stats-box">
+        <div class="stat-row">
+          <span class="sl">健康</span>
+          <div class="bar-wrap"><div class="bar-fill bar-health" id="bar-health"></div></div>
+          <span class="sv" id="val-health">50</span>
+        </div>
+        <div class="stat-row">
+          <span class="sl">幸福</span>
+          <div class="bar-wrap"><div class="bar-fill bar-happiness" id="bar-happiness"></div></div>
+          <span class="sv" id="val-happiness">50</span>
+        </div>
+        <div class="stat-row">
+          <span class="sl">財産</span>
+          <div class="bar-wrap"><div class="bar-fill bar-wealth" id="bar-wealth"></div></div>
+          <span class="sv" id="val-wealth">50</span>
+        </div>
+        <div class="stat-row">
+          <span class="sl">縁</span>
+          <div class="bar-wrap"><div class="bar-fill bar-social" id="bar-social"></div></div>
+          <span class="sv" id="val-social">50</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="log-area"></div>
+
+    <div class="bottom-bar">
+      <button id="next-btn" class="primary-btn">次の年へ →</button>
+    </div>
+  </div>
+
+  <!-- 終了画面 -->
+  <div id="end-screen" class="screen">
+    <div class="container">
+      <h2 class="end-title">人生の幕が下りた</h2>
+      <div id="end-summary"></div>
+      <button id="restart-btn" class="primary-btn">もう一度生まれる</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

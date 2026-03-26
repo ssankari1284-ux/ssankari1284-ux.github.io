@@ -1,0 +1,331 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+  background: #f5f0e8;
+  color: #2d2d2d;
+  min-height: 100vh;
+}
+
+/* --- 画面の切り替え --- */
+.screen {
+  display: none;
+  min-height: 100vh;
+}
+
+#setup-screen.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+#game-screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+#end-screen.active {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* --- 共通コンテナ --- */
+.container {
+  max-width: 480px;
+  width: 100%;
+}
+
+/* --- セットアップ画面 --- */
+.title {
+  font-size: 2rem;
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.subtitle {
+  text-align: center;
+  color: #888;
+  margin-bottom: 40px;
+  font-size: 0.95rem;
+}
+
+.form-group {
+  margin-bottom: 28px;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+}
+
+.opt {
+  flex: 1;
+  padding: 12px 8px;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #666;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.opt:hover {
+  border-color: #7a6b8a;
+  color: #7a6b8a;
+}
+
+.opt.selected {
+  border-color: #7a6b8a;
+  background: #7a6b8a;
+  color: white;
+  font-weight: bold;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 16px;
+  background: #7a6b8a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+
+.primary-btn:hover {
+  background: #5d4f70;
+}
+
+.primary-btn:disabled {
+  background: #bbb;
+  cursor: not-allowed;
+}
+
+/* --- ゲーム画面 上部ステータスバー --- */
+.top-bar {
+  position: sticky;
+  top: 0;
+  background: white;
+  border-bottom: 1px solid #e0d8cc;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  z-index: 10;
+}
+
+.age-box {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #7a6b8a;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1;
+}
+
+.age-unit {
+  font-size: 1rem;
+  font-weight: normal;
+  color: #999;
+}
+
+.stats-box {
+  flex: 1;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.stat-row:last-child {
+  margin-bottom: 0;
+}
+
+.sl {
+  font-size: 0.72rem;
+  color: #999;
+  width: 26px;
+  flex-shrink: 0;
+}
+
+.bar-wrap {
+  flex: 1;
+  height: 7px;
+  background: #f0ece6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.bar-health    { background: #4caf50; }
+.bar-happiness { background: #ff9800; }
+.bar-wealth    { background: #2196f3; }
+.bar-social    { background: #9c27b0; }
+
+.sv {
+  font-size: 0.72rem;
+  color: #aaa;
+  width: 22px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* --- イベントログ --- */
+#log-area {
+  flex: 1;
+  padding: 20px 20px 40px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.year-block {
+  margin-bottom: 22px;
+  animation: fadeUp 0.35s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.year-label {
+  font-size: 0.75rem;
+  color: #bbb;
+  font-weight: bold;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.event-card {
+  background: white;
+  border-radius: 10px;
+  padding: 13px 16px;
+  margin-bottom: 8px;
+  border-left: 4px solid #ddd;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.event-card.positive  { border-left-color: #4caf50; }
+.event-card.negative  { border-left-color: #e53935; }
+.event-card.neutral   { border-left-color: #bbb; }
+.event-card.milestone {
+  border-left-color: #ff9800;
+  background: #fffdf5;
+}
+
+.quiet-year {
+  background: white;
+  border-radius: 10px;
+  padding: 11px 16px;
+  color: #ccc;
+  font-size: 0.85rem;
+  font-style: italic;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* --- 下部ボタンエリア --- */
+.bottom-bar {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  border-top: 1px solid #e0d8cc;
+  padding: 14px 20px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+}
+
+.bottom-bar .primary-btn {
+  margin-top: 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+/* --- 終了画面 --- */
+.end-title {
+  text-align: center;
+  font-size: 1.7rem;
+  color: #1a1a1a;
+  margin-bottom: 28px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: 6px;
+}
+
+.summary-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2d2d2d;
+}
+
+.summary-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.summary-stat-item {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.summary-stat-item strong {
+  color: #2d2d2d;
+}
+
+.summary-comment {
+  color: #666;
+  font-size: 0.92rem;
+  line-height: 1.8;
+  margin-top: 8px;
+  white-space: pre-line;
+}
+
+#end-screen .primary-btn {
+  margin-top: 10px;
+}
