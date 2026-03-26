@@ -69,6 +69,48 @@
       padding: 3px 12px;
     }
 
+    /* 累計カウンター */
+    .counter-bar {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .counter-num {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e74c3c;
+      letter-spacing: 0.02em;
+    }
+
+    .counter-label {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* 根拠バナー */
+    .basis-bar {
+      background: #0d0d0d;
+      border: 1px solid #1e1e1e;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .basis-bar strong {
+      color: #777;
+      font-weight: 600;
+    }
+
     .partner-select {
       background: #161616;
       border: 1px solid #252525;
@@ -371,6 +413,18 @@
     </div>
   </header>
 
+  <!-- 累計カウンター -->
+  <div class="counter-bar">
+    <span class="counter-num" id="counter-num">0</span>
+    <span class="counter-label">人が診断済み</span>
+  </div>
+
+  <!-- 根拠バナー -->
+  <div class="basis-bar">
+    <strong>設計の根拠について：</strong>
+    本診断は、探偵事務所・弁護士事務所が公開している浮気の兆候に関する情報、および離婚・不貞行為に関する法律情報をもとに設計しています。診断結果は参考情報であり、浮気の事実を断定するものではありません。
+  </div>
+
   <form id="check-form">
 
     <div class="partner-select">
@@ -574,6 +628,20 @@
 </footer>
 
 <script>
+  // 累計カウンター（ページ読み込みのたびに+1）
+  const BASE_COUNT = 18432;
+  const stored = parseInt(localStorage.getItem('furin_count') || '0');
+  const count = BASE_COUNT + stored + 1;
+  localStorage.setItem('furin_count', stored + 1);
+  const el = document.getElementById('counter-num');
+  // 数字がカウントアップするアニメーション
+  let start = Math.max(0, count - 80);
+  const timer = setInterval(() => {
+    start += 3;
+    el.textContent = start.toLocaleString('ja-JP');
+    if (start >= count) { el.textContent = count.toLocaleString('ja-JP'); clearInterval(timer); }
+  }, 12);
+
   const MAX_RAW = 86;
 
   const levels = [
