@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>親ガチャ偏差値診断 — あなたのスタート地点を数値化する</title>
+  <meta property="og:title" content="親ガチャ偏差値診断 — あなたのスタート地点を数値化する">
+  <meta property="og:description" content="生まれた環境は、人生の難易度をどれだけ規定するか。経済・文化・家族・遺伝の4軸で偏差値を算出します。">
+  <meta property="og:image" content="https://ssankari1284-ux.github.io/oyagacha/ogp.png">
+  <meta property="og:url" content="https://ssankari1284-ux.github.io/oyagacha/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="親ガチャ偏差値診断 — あなたのスタート地点を数値化する">
+  <meta name="twitter:description" content="生まれた環境は、人生の難易度をどれだけ規定するか。経済・文化・家族・遺伝の4軸で偏差値を算出します。">
+  <meta name="twitter:image" content="https://ssankari1284-ux.github.io/oyagacha/ogp.png">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: #fdf4ff;
+      color: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 48px 16px 80px;
+      overflow-x: hidden;
+    }
+    .container { max-width: 560px; width: 100%; position: relative; }
+
+    .header { text-align: center; margin-bottom: 40px; }
+    .header-badge {
+      display: inline-block; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.2em; color: #9333ea;
+      background: #f3e8ff; border-radius: 20px;
+      padding: 4px 14px; margin-bottom: 16px;
+    }
+    h1 { font-size: 1.5rem; font-weight: 800; line-height: 1.55; margin-bottom: 10px; color: #1a1a2e; }
+    .subtitle { font-size: 0.85rem; color: #9ca3af; line-height: 1.75; }
+
+    .progress-wrap { margin-bottom: 28px; }
+    .progress-bar { height: 6px; background: #f3e8ff; border-radius: 6px; overflow: hidden; }
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #f472b6, #fb923c, #fbbf24, #34d399, #60a5fa, #a855f7);
+      border-radius: 6px;
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .question-card {
+      background: #ffffff;
+      border: 2px solid #f3e8ff;
+      border-radius: 24px; padding: 28px 24px;
+      box-shadow: 0 8px 32px rgba(168, 85, 247, 0.1);
+    }
+    .question-num { font-size: 0.72rem; letter-spacing: 0.1em; color: #a855f7; margin-bottom: 10px; font-weight: 700; }
+    .question-text { font-size: 1.05rem; font-weight: 600; line-height: 1.75; margin-bottom: 22px; color: #1a1a2e; }
+    .chara { text-align: center; margin-bottom: 20px; }
+    .chara-face {
+      display: inline-block; width: 64px; height: 64px;
+      background: linear-gradient(145deg, #fce7f3, #ede9fe);
+      border-radius: 50%; border: 3px solid #f9a8d4;
+      position: relative; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.25s, background 0.25s;
+    }
+    .chara.happy .chara-face { transform: scale(1.1); border-color: #f472b6; }
+    .chara.sad   .chara-face { transform: scale(0.95); border-color: #a5b4fc; background: linear-gradient(145deg, #e0e7ff, #ede9fe); }
+    .chara-face::before, .chara-face::after {
+      content: ''; position: absolute;
+      width: 13px; height: 8px; background: #fb7185;
+      border-radius: 50%; top: 36px; opacity: 0; transition: opacity 0.25s;
+    }
+    .chara-face::before { left: 5px; }
+    .chara-face::after  { right: 5px; }
+    .chara.happy .chara-face::before,
+    .chara.happy .chara-face::after { opacity: 0.55; }
+    .chara-eye {
+      position: absolute; width: 9px; height: 9px;
+      background: #1a1a2e; border-radius: 50%; top: 22px;
+      transition: all 0.25s;
+    }
+    .chara-eye.left  { left: 14px; }
+    .chara-eye.right { right: 14px; }
+    .chara.happy .chara-eye { height: 5px; border-radius: 5px 5px 0 0; top: 24px; }
+    .chara.sad .chara-eye.left  { transform: rotate(12deg); top: 25px; }
+    .chara.sad .chara-eye.right { transform: rotate(-12deg); top: 25px; }
+    .chara-mouth {
+      position: absolute; bottom: 13px;
+      left: 50%; transform: translateX(-50%);
+      width: 18px; height: 0;
+      border-bottom: 3px solid #1a1a2e;
+      transition: all 0.25s;
+    }
+    .chara.happy .chara-mouth {
+      width: 24px; height: 12px;
+      border: 3px solid #1a1a2e; border-top: none;
+      border-radius: 0 0 24px 24px; bottom: 11px;
+    }
+    .chara.sad .chara-mouth {
+      width: 18px; height: 9px;
+      border: 3px solid #1a1a2e; border-bottom: none;
+      border-radius: 9px 9px 0 0; bottom: 9px;
+    }
+
+    .branch-hint {
+      display: none; font-size: 0.73rem; color: #92400e;
+      margin-top: -14px; margin-bottom: 18px;
+      padding: 6px 12px; background: #fef9c3;
+      border-radius: 8px; border-left: 3px solid #fbbf24;
+    }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option-btn {
+      background: #ffffff; border: 2px solid #e9d5ff;
+      color: #374151; padding: 13px 18px; border-radius: 50px;
+      font-size: 0.92rem; text-align: left; cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .option-btn:hover:not(:disabled) { border-color: #a855f7; background: #faf5ff; color: #6b21a8; }
+    .option-btn.selected { background: #f3e8ff; border-color: #a855f7; color: #6b21a8; font-weight: 600; }
+    .option-btn:disabled { cursor: default; opacity: 0.5; }
+
+    #loading-screen { display: none; text-align: center; padding: 60px 0; }
+    .loading-icon {
+      width: 56px; height: 56px;
+      border: 3px solid #f3e8ff; border-top-color: #a855f7;
+      border-radius: 50%; margin: 0 auto 24px; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: #1a1a2e; }
+    .loading-status { font-size: 0.82rem; color: #9ca3af; margin-bottom: 28px; min-height: 20px; transition: opacity 0.3s; }
+    .loading-bar-wrap { height: 6px; background: #f3e8ff; border-radius: 6px; overflow: hidden; max-width: 300px; margin: 0 auto; }
+    .loading-bar-fill {
+      height: 100%; border-radius: 6px; width: 0%; transition: width 0.4s ease;
+      background: linear-gradient(90deg, #f472b6, #fb923c, #fbbf24, #34d399, #60a5fa, #a855f7);
+    }
+
+    #result-screen { display: none; }
+    .result-flash { position: fixed; inset: 0; opacity: 0; pointer-events: none; z-index: 100; transition: opacity 0.1s; }
+
+    .result-hero {
+      text-align: center; background: #ffffff;
+      border: 2px solid #f3e8ff;
+      border-radius: 28px; padding: 40px 24px 32px; margin-bottom: 14px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(168, 85, 247, 0.12);
+    }
+    .result-glow {
+      position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px; border-radius: 50%;
+      opacity: 0.15; filter: blur(80px); pointer-events: none;
+    }
+    .result-label { font-size: 0.72rem; letter-spacing: 0.2em; color: #9ca3af; margin-bottom: 16px; font-weight: 700; }
+    .result-score { font-size: 6.5rem; font-weight: 800; line-height: 1; margin-bottom: 12px; font-variant-numeric: tabular-nums; position: relative; }
+    .result-rank-badge {
+      display: none; font-size: 0.82rem; font-weight: 800;
+      letter-spacing: 0.15em; color: #fff; border-radius: 50px;
+      padding: 6px 22px; margin-bottom: 16px;
+      animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    @keyframes badgePop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .result-message { font-size: 0.88rem; color: #6b7280; line-height: 1.8; max-width: 360px; margin: 0 auto; }
+    .result-percentile { font-size: 0.78rem; color: #9ca3af; margin-top: 10px; }
+
+    .summary-card {
+      background: #ffffff; border: 2px solid #f3e8ff;
+      border-radius: 20px; padding: 20px 24px; margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(168, 85, 247, 0.07);
+    }
+    .summary-title { font-size: 0.7rem; letter-spacing: 0.15em; color: #9ca3af; margin-bottom: 12px; font-weight: 700; }
+    .summary-text { font-size: 0.9rem; color: #374151; line-height: 1.85; }
+
+    .breakdown {
+      background: #ffffff; border: 2px solid #f3e8ff;
+      border-radius: 20px; padding: 22px 24px; margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(168, 85, 247, 0.07);
+    }
+    .breakdown-title { font-size: 0.7rem; letter-spacing: 0.15em; color: #9ca3af; margin-bottom: 18px; font-weight: 700; }
+    .breakdown-row { margin-bottom: 15px; }
+    .breakdown-row:last-child { margin-bottom: 0; }
+    .breakdown-meta { display: flex; justify-content: space-between; font-size: 0.82rem; color: #9ca3af; margin-bottom: 7px; }
+    .breakdown-meta strong { color: #374151; }
+    .bar-bg { height: 8px; background: #faf5ff; border-radius: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 8px; transition: width 0.9s cubic-bezier(0.4,0,0.2,1); }
+    #eco-bar { background: linear-gradient(90deg, #f472b6, #fb7185); }
+    #cul-bar { background: linear-gradient(90deg, #fbbf24, #fb923c); }
+    #fam-bar { background: linear-gradient(90deg, #34d399, #06b6d4); }
+    #gen-bar { background: linear-gradient(90deg, #818cf8, #a855f7); }
+
+    .result-actions { display: flex; gap: 10px; }
+    .share-btn {
+      flex: 1; background: linear-gradient(135deg, #f472b6, #a855f7);
+      color: #fff; border: none; padding: 15px 20px; border-radius: 50px;
+      font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: opacity 0.15s;
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+    }
+    .share-btn:hover { opacity: 0.88; }
+    .retry-btn {
+      background: #ffffff; color: #9ca3af; border: 2px solid #e9d5ff;
+      padding: 15px 20px; border-radius: 50px; font-size: 0.9rem;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .retry-btn:hover { color: #6b21a8; border-color: #a855f7; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.3s ease forwards; }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); } 15% { transform: translateX(-8px); }
+      30% { transform: translateX(8px); }   45% { transform: translateX(-6px); }
+      60% { transform: translateX(6px); }   75% { transform: translateX(-3px); }
+      90% { transform: translateX(3px); }
+    }
+    .shake { animation: shake 0.6s ease 0.8s both; }
+
+    .particle {
+      position: fixed; pointer-events: none; z-index: 200;
+      border-radius: 50%; animation: particleFall linear forwards;
+    }
+    @keyframes particleFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+    @media (max-width: 480px) {
+      body { padding: 28px 12px 56px; }
+      h1 { font-size: 1.25rem; }
+      .subtitle { font-size: 0.8rem; }
+      .question-card { padding: 22px 16px; border-radius: 20px; }
+      .question-text { font-size: 0.98rem; margin-bottom: 18px; }
+      .option-btn { padding: 14px 16px; font-size: 0.88rem; }
+      .result-score { font-size: 4.8rem; }
+      .result-hero { padding: 32px 16px 26px; border-radius: 22px; }
+      .result-message { font-size: 0.84rem; }
+      .summary-card, .breakdown { padding: 18px 16px; }
+      .summary-text { font-size: 0.86rem; }
+      .share-btn, .retry-btn { padding: 14px 14px; font-size: 0.88rem; }
+      .chara-face { width: 56px; height: 56px; }
+      .chara-eye { top: 19px; }
+      .chara-eye.left  { left: 12px; }
+      .chara-eye.right { right: 12px; }
+      .chara-face::before { top: 32px; left: 4px; }
+      .chara-face::after  { top: 32px; right: 4px; }
+      .chara-mouth { bottom: 11px; }
+      .chara.happy .chara-mouth { bottom: 9px; }
+      .chara.sad   .chara-mouth { bottom: 7px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="result-flash" id="result-flash"></div>
+
+  <div id="quiz-area">
+    <div class="header">
+      <div class="header-badge">DATA-DRIVEN DIAGNOSIS</div>
+      <h1>親ガチャ偏差値<br>あなたのスタート地点を数値化する</h1>
+      <p class="subtitle">生まれた環境は、人生の難易度をどれだけ規定するか。</p>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-bar-inner" id="progress-bar" style="width:0%"></div></div>
+    </div>
+    <div class="question-card fade-up" id="question-card">
+      <div class="chara" id="chara">
+        <div class="chara-face">
+          <div class="chara-eye left"></div>
+          <div class="chara-eye right"></div>
+          <div class="chara-mouth"></div>
+        </div>
+      </div>
+      <div class="question-num" id="question-num">Q1</div>
+      <div class="question-text" id="question-text"></div>
+      <div class="branch-hint" id="branch-hint"></div>
+      <div class="options" id="options"></div>
+    </div>
+  </div>
+
+  <div id="loading-screen">
+    <div class="loading-icon"></div>
+    <div class="loading-title">解析中...</div>
+    <div class="loading-status" id="loading-status">データを収集中</div>
+    <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loading-bar"></div></div>
+  </div>
+
+  <div id="result-screen">
+    <div class="result-hero" id="result-hero">
+      <div class="result-glow" id="result-glow"></div>
+      <div class="result-label">YOUR SCORE</div>
+      <div class="result-score" id="result-score">0</div>
+      <div><span class="result-rank-badge" id="result-rank-badge">--</span></div>
+      <p class="result-message" id="result-message"></p>
+      <p class="result-percentile" id="result-percentile"></p>
+    </div>
+    <div class="summary-card">
+      <div class="summary-title">PROFILE SUMMARY</div>
+      <p class="summary-text" id="summary-text"></p>
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-title">CATEGORY BREAKDOWN</div>
+      <div class="breakdown-row">
+        <div class="breakdown-meta"><strong>経済資本</strong><span id="eco-pct">0%</span></div>
+        <div class="bar-bg"><div class="bar-fill" id="eco-bar" style="width:0%"></div></div>
+      </div>
+      <div class="breakdown-row">
+        <div class="breakdown-meta"><strong>文化・地域</strong><span id="cul-pct">0%</span></div>
+        <div class="bar-bg"><div class="bar-fill" id="cul-bar" style="width:0%"></div></div>
+      </div>
+      <div class="breakdown-row">
+        <div class="breakdown-meta"><strong>家族・環境</strong><span id="fam-pct">0%</span></div>
+        <div class="bar-bg"><div class="bar-fill" id="fam-bar" style="width:0%"></div></div>
+      </div>
+      <div class="breakdown-row">
+        <div class="breakdown-meta"><strong>遺伝・身体</strong><span id="gen-pct">0%</span></div>
+        <div class="bar-bg"><div class="bar-fill" id="gen-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="share-btn" onclick="shareResult()">Xでシェアする</button>
+      <button class="retry-btn" onclick="retryQuiz()">もう一度</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SITE_URL = 'https://ssankari1284-ux.github.io/oyagacha/';
+
+const qGraph = {
+  // ── 旅行 ──────────────────────────────────────
+  q1: {
+    text: "子供のころ、家族旅行は年に何回くらい行きましたか？",
+    cat: 'eco', max: 10,
+    opts: [
+      { label: "ほぼ行かなかった",  score: 0,  next: 'b1a' },
+      { label: "2〜3年に1回",       score: 3,  next: 'b1b' },
+      { label: "年1回",              score: 6,  next: 'b1b' },
+      { label: "年2回以上",          score: 10, next: 'b1c' },
+    ]
+  },
+  b1a: {
+    text: "食卓に毎日、肉・魚などメインのおかずはありましたか？",
+    cat: 'eco', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "ない日もよくあった",              score: 0, next: 'q2' },
+      { label: "だいたいあった",                  score: 4, next: 'q2' },
+      { label: "常にあった・食事にこだわっていた", score: 8, next: 'q2' },
+    ]
+  },
+  b1b: {
+    text: "旅行での宿泊は、どんなところが多かったですか？",
+    cat: 'eco', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "日帰りか車中泊が多かった",   score: 0, next: 'q2' },
+      { label: "ビジネスホテル・民宿",        score: 3, next: 'q2' },
+      { label: "普通のホテル・旅館",          score: 5, next: 'q2' },
+      { label: "高級旅館・リゾートホテル",    score: 8, next: 'q2' },
+    ]
+  },
+  b1c: {
+    text: "子供のころ、海外旅行に行ったことはありますか？",
+    cat: 'eco', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "行ったことない",          score: 0, next: 'q2' },
+      { label: "1〜2回ある",              score: 3, next: 'q2' },
+      { label: "3〜5回ある",              score: 5, next: 'q2' },
+      { label: "毎年のように行っていた",  score: 8, next: 'q2' },
+    ]
+  },
+
+  // ── スマホ・塾 ────────────────────────────────
+  q2: {
+    text: "高校生のとき、スマホ・携帯は自分専用でしたか？",
+    cat: 'eco', max: 10,
+    opts: [
+      { label: "持っていなかった",  score: 0,  next: 'b2a' },
+      { label: "家族と共用だった",  score: 4,  next: 'q3' },
+      { label: "自分専用だった",    score: 10, next: 'q3' },
+    ]
+  },
+  b2a: {
+    text: "代わりに、自宅でパソコンやインターネットは使えましたか？",
+    cat: 'eco', max: 6, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "パソコンもネットも使えなかった",          score: 0, next: 'q3' },
+      { label: "親が管理する形でなら使えた",              score: 2, next: 'q3' },
+      { label: "自由に使えるパソコン・ネット環境があった", score: 6, next: 'q3' },
+    ]
+  },
+  q3: {
+    text: "中学・高校時代、塾や予備校に通っていましたか？",
+    cat: 'eco', max: 10,
+    opts: [
+      { label: "通っていなかった",            score: 0,  next: 'b3a' },
+      { label: "一時期だけ通った",            score: 4,  next: 'b3b' },
+      { label: "ずっと通っていた",            score: 8,  next: 'b3b' },
+      { label: "個別指導・家庭教師もあった",  score: 10, next: 'b3b' },
+    ]
+  },
+  b3a: {
+    text: "塾に行けない代わりに、学習環境はありましたか？",
+    cat: 'eco', max: 6, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "特になかった",                      score: 0, next: 'q4' },
+      { label: "図書館や学校の自習室を使っていた",  score: 3, next: 'q4' },
+      { label: "通信教育・参考書は買ってもらえた",  score: 6, next: 'q4' },
+    ]
+  },
+  b3b: {
+    text: "塾に通い始めたのは何年生からですか？",
+    cat: 'eco', max: 6, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "高校生から",               score: 1, next: 'q4' },
+      { label: "中学生から",               score: 3, next: 'q4' },
+      { label: "小学校高学年から",         score: 5, next: 'q4' },
+      { label: "小学校低学年・幼少期から", score: 6, next: 'q4' },
+    ]
+  },
+
+  // ── 私立学校 ──────────────────────────────────
+  q4: {
+    text: "出身校に私立はありましたか？（中学・高校どちらか）",
+    cat: 'eco', max: 10,
+    opts: [
+      { label: "すべて公立",                 score: 0,  next: 'q5' },
+      { label: "中学か高校のどちらか私立",   score: 6,  next: 'b4a' },
+      { label: "中学・高校ともに私立",       score: 10, next: 'b4a' },
+      { label: "小学校から私立",             score: 10, next: 'b4a' },
+    ]
+  },
+  b4a: {
+    text: "通っていた私立はどのような学校でしたか？",
+    cat: 'eco', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "地元の普通の私立",                   score: 0, next: 'q5' },
+      { label: "中堅の進学校・有名大学の付属校",     score: 4, next: 'q5' },
+      { label: "難関進学校・最難関大学付属校",        score: 8, next: 'q5' },
+    ]
+  },
+
+  // ── 持ち家 ────────────────────────────────────
+  q5: {
+    text: "実家は持ち家でしたか？",
+    cat: 'eco', max: 10,
+    opts: [
+      { label: "賃貸",                  score: 0,  next: 'b5a' },
+      { label: "社宅・公営住宅",        score: 2,  next: 'b5a' },
+      { label: "持ち家（マンション）",  score: 7,  next: 'b5b' },
+      { label: "持ち家（一戸建て）",    score: 10, next: 'b5b' },
+    ]
+  },
+  b5a: {
+    text: "引っ越しは何回くらいしましたか？",
+    cat: 'eco', max: 6, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "4回以上",     score: 0, next: 'q6' },
+      { label: "2〜3回",      score: 2, next: 'q6' },
+      { label: "1回",         score: 4, next: 'q6' },
+      { label: "一度もない",  score: 6, next: 'q6' },
+    ]
+  },
+  b5b: {
+    text: "自分専用の部屋はありましたか？",
+    cat: 'eco', max: 6, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "なかった（兄弟と共用・リビングで勉強）", score: 0, next: 'q6' },
+      { label: "小学校高学年以降はあった",               score: 3, next: 'q6' },
+      { label: "物心ついたころからあった",               score: 6, next: 'q6' },
+    ]
+  },
+
+  // ── 本・地域 ──────────────────────────────────
+  q6: {
+    text: "家に本（マンガ以外）は何冊くらいありましたか？",
+    cat: 'cul', max: 10,
+    opts: [
+      { label: "ほとんどなかった",         score: 0,  next: 'q7' },
+      { label: "数冊程度",                 score: 3,  next: 'q7' },
+      { label: "本棚1〜2本分",             score: 7,  next: 'q7' },
+      { label: "本棚が複数・書斎があった", score: 10, next: 'b6a' },
+    ]
+  },
+  b6a: {
+    text: "親の最終学歴は主にどのくらいでしたか？",
+    cat: 'cul', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "中学・高校卒",                         score: 0, next: 'q7' },
+      { label: "専門学校・短大卒",                     score: 3, next: 'q7' },
+      { label: "大学卒（一般的な大学）",               score: 6, next: 'q7' },
+      { label: "大学院卒・国立大・難関私大卒など",     score: 8, next: 'q7' },
+    ]
+  },
+  q7: {
+    text: "主に育った地域はどちらですか？",
+    cat: 'cul', max: 10,
+    opts: [
+      { label: "地方の町・村",                           score: 0,  next: 'b7a' },
+      { label: "地方の中小都市",                         score: 3,  next: 'b7b' },
+      { label: "政令指定都市（大阪・名古屋・福岡など）", score: 7,  next: 'b7c' },
+      { label: "東京23区・横浜・川崎",                   score: 10, next: 'b7d' },
+    ]
+  },
+  b7a: {
+    text: "最寄りのコンビニまでどのくらいかかりましたか？",
+    cat: 'cul', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "30分以上かかった",    score: 0, next: 'q8' },
+      { label: "15〜30分かかった",    score: 2, next: 'q8' },
+      { label: "5〜15分程度",         score: 5, next: 'q8' },
+      { label: "5分以内・徒歩圏内",   score: 8, next: 'q8' },
+    ]
+  },
+  b7b: {
+    text: "最寄り駅まで徒歩・自転車で行けましたか？",
+    cat: 'cul', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "駅がなかった・車でしか行けなかった",  score: 0, next: 'q8' },
+      { label: "車で30分以上",                        score: 2, next: 'q8' },
+      { label: "自転車で行けた（15分以内）",           score: 5, next: 'q8' },
+      { label: "徒歩で行けた（10分以内）",             score: 8, next: 'q8' },
+    ]
+  },
+  b7c: {
+    text: "都市の中心部に近い場所でしたか？",
+    cat: 'cul', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "郊外・ベッドタウン（電車で40分以上）", score: 2, next: 'q8' },
+      { label: "やや郊外（電車で20〜40分）",           score: 4, next: 'q8' },
+      { label: "中心部に近い（電車で20分以内）",       score: 6, next: 'q8' },
+      { label: "都心部・中心街に住んでいた",           score: 8, next: 'q8' },
+    ]
+  },
+  b7d: {
+    text: "東京・横浜の中でも、どのエリアでしたか？",
+    cat: 'cul', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "足立区・葛飾区・江戸川区・北区など",           score: 2, next: 'q8' },
+      { label: "横浜・川崎・練馬区・江東区・板橋区など",       score: 4, next: 'q8' },
+      { label: "世田谷区・目黒区・杉並区・文京区など",         score: 6, next: 'q8' },
+      { label: "港区・渋谷区・千代田区・中央区・新宿区など",   score: 8, next: 'q8' },
+    ]
+  },
+
+  // ── 家族構成 ──────────────────────────────────
+  q8: {
+    text: "両親は揃っていましたか？",
+    cat: 'fam', max: 10,
+    opts: [
+      { label: "物心ついたころからひとり親", score: 0,  next: 'b8a' },
+      { label: "途中でひとり親になった",     score: 4,  next: 'b8a' },
+      { label: "両親揃っていた",             score: 10, next: 'b8b' },
+    ]
+  },
+  b8a: {
+    text: "ひとり親の状況になったのは、何歳のころですか？",
+    cat: 'fam', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "3歳以前・記憶がない",       score: 0, next: 'q9' },
+      { label: "小学校入学前（3〜6歳）",    score: 2, next: 'q9' },
+      { label: "小学生のとき",              score: 4, next: 'q9' },
+      { label: "中学生以降",                score: 8, next: 'q9' },
+    ]
+  },
+  b8b: {
+    text: "両親の仲はどうでしたか？",
+    cat: 'fam', max: 8, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "とても悪かった・よくケンカしていた", score: 0, next: 'q9' },
+      { label: "どちらかといえば悪かった",           score: 2, next: 'q9' },
+      { label: "普通（特に気にならなかった）",        score: 5, next: 'q9' },
+      { label: "仲が良かった",                       score: 8, next: 'q9' },
+    ]
+  },
+
+  // ── 習い事・暴力・遺伝 ────────────────────────
+  q9: {
+    text: "習い事は同時期に最大何個していましたか？",
+    cat: 'eco', max: 10,
+    opts: [
+      { label: "していなかった", score: 0,  next: 'b9b' },
+      { label: "1個",            score: 3,  next: 'q10' },
+      { label: "2〜3個",         score: 7,  next: 'q10' },
+      { label: "4個以上",        score: 10, next: 'b9a' },
+    ]
+  },
+  b9a: {
+    text: "どんな種類の習い事が多かったですか？",
+    cat: 'eco', max: 6, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "スポーツ系（サッカー・野球・水泳など）",         score: 2, next: 'q10' },
+      { label: "芸術・音楽系（ピアノ・バイオリン・絵画など）",   score: 5, next: 'q10' },
+      { label: "学習系（英会話・そろばん・書道など）",           score: 4, next: 'q10' },
+      { label: "バランスよく複数のジャンルがあった",             score: 6, next: 'q10' },
+    ]
+  },
+  b9b: {
+    text: "習い事をしなかった主な理由はなんでしたか？",
+    cat: 'eco', max: 5, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "経済的な理由（お金がなかった）",                 score: 0, next: 'q10' },
+      { label: "近くに教室がなかった・送り迎えが難しかった",     score: 2, next: 'q10' },
+      { label: "本人が興味を示さなかった",                       score: 3, next: 'q10' },
+      { label: "特に考えていなかった・覚えていない",             score: 5, next: 'q10' },
+    ]
+  },
+  q10: {
+    text: "親から怒鳴られたり、暴力を受けたことがありますか？",
+    cat: 'fam', max: 10,
+    opts: [
+      { label: "日常的にあった",   score: 0,  next: 'q11' },
+      { label: "時々あった",       score: 3,  next: 'q11' },
+      { label: "ほとんどなかった", score: 7,  next: 'q11' },
+      { label: "まったくなかった", score: 10, next: 'q11' },
+    ]
+  },
+  q11: {
+    text: "現在の身長を教えてください（男性のみ・女性はスキップ可）",
+    cat: 'gen', max: 10,
+    opts: [
+      { label: "スキップする（女性・回答しない）", score: 5,  next: 'q12' },
+      { label: "160cm未満",  score: 0,  next: 'q12' },
+      { label: "160〜165cm", score: 3,  next: 'q12' },
+      { label: "165〜170cm", score: 5,  next: 'q12' },
+      { label: "170〜175cm", score: 7,  next: 'q12' },
+      { label: "175〜180cm", score: 9,  next: 'q12' },
+      { label: "180cm以上",  score: 10, next: 'q12' },
+    ]
+  },
+  q12: {
+    text: "学生時代、異性から告白されたことがありますか？",
+    cat: 'gen', max: 10,
+    opts: [
+      { label: "まったくない",           score: 0,  next: 'q13' },
+      { label: "1〜2回ある",             score: 5,  next: 'q13' },
+      { label: "3回以上ある",            score: 8,  next: 'q13' },
+      { label: "数えきれないくらいある", score: 10, next: 'b12a' },
+    ]
+  },
+  b12a: {
+    text: "容姿について、周りからよく言われましたか？",
+    cat: 'gen', max: 6, hint: "回答に基づいて追加の質問が生成されました",
+    opts: [
+      { label: "容姿についてはあまり言われなかった",               score: 0, next: 'q13' },
+      { label: "「かわいい・かっこいい」と言われることがあった",   score: 3, next: 'q13' },
+      { label: "容姿を褒められることが多かった・よくモテた",       score: 6, next: 'q13' },
+    ]
+  },
+  q13: {
+    text: "体育の授業や運動会では得意な方でしたか？",
+    cat: 'gen', max: 10,
+    opts: [
+      { label: "苦手だった",                 score: 0,  next: 'q14' },
+      { label: "どちらかといえば苦手",       score: 3,  next: 'q14' },
+      { label: "どちらかといえば得意",       score: 7,  next: 'q14' },
+      { label: "得意だった・選手に選ばれた", score: 10, next: 'q14' },
+    ]
+  },
+  q14: {
+    text: "学校生活で、忘れ物が多い・じっとしていられないなど困ったことがありましたか？",
+    cat: 'gen', max: 10,
+    opts: [
+      { label: "常に困っていた",   score: 0,  next: 'q15' },
+      { label: "時々困っていた",   score: 4,  next: 'q15' },
+      { label: "あまりなかった",   score: 7,  next: 'q15' },
+      { label: "まったくなかった", score: 10, next: 'q15' },
+    ]
+  },
+  q15: {
+    text: "子供のころ、門限や行動を細かく制限されていましたか？",
+    cat: 'fam', max: 10,
+    opts: [
+      { label: "非常に厳しく制限されていた", score: 0,  next: null },
+      { label: "やや制限されていた",         score: 4,  next: null },
+      { label: "ほどよく自由だった",         score: 8,  next: null },
+      { label: "ほぼ自由だった",             score: 10, next: null },
+    ]
+  },
+};
+
+const RANKS = {
+  SSR: { color: '#f59e0b', min: 70, label: 'SSR', message: '理論値は出ています。あとは本人次第という、残酷な話です。', percentile: '上位2%' },
+  SR:  { color: '#ec4899', min: 62, label: 'SR',  message: 'スタートダッシュの優位性を、おそらく自覚していないと思います。', percentile: '上位12%' },
+  R:   { color: '#6366f1', min: 52, label: 'R',   message: '平均です。ただしこの「平均」は、生まれた国によって意味が変わります。', percentile: '平均層' },
+  N:   { color: '#10b981', min: 42, label: 'N',   message: '不利なゲームを、それでもやってきた。', percentile: '下位40%' },
+  C:   { color: '#e879f9', min: 32, label: 'C',   message: '客観的に、難しい条件でした。自己責任論はここでは的外れです。', percentile: '下位20%' },
+  D:   { color: '#818cf8', min: 0,  label: 'D',   message: 'かなり困難なゲームを、あなたは生きてきました。これはデータであり、評価ではありません。', percentile: '下位5%' },
+};
+
+let currentId = 'q1';
+let answeredData = [];
+let questionCount = 0;
+
+function renderQuestion(id) {
+  const q = qGraph[id];
+  document.getElementById('chara').className = 'chara';
+  const card = document.getElementById('question-card');
+  card.classList.remove('fade-up');
+  void card.offsetWidth;
+  card.classList.add('fade-up');
+
+  questionCount++;
+  document.getElementById('question-num').textContent = `Q${questionCount}`;
+  document.getElementById('question-text').textContent = q.text;
+
+  const hintEl = document.getElementById('branch-hint');
+  if (q.hint) { hintEl.textContent = '— 詳細スコアを算出しています'; hintEl.style.display = 'block'; }
+  else { hintEl.style.display = 'none'; }
+
+  document.getElementById('options').innerHTML = q.opts.map(opt =>
+    `<button class="option-btn" onclick="selectOption(this,${opt.score},'${opt.next}')">${opt.label}</button>`
+  ).join('');
+
+  const pct = Math.min(99, Math.round((questionCount / 24) * 100));
+  document.getElementById('progress-bar').style.width = `${pct}%`;
+}
+
+function selectOption(btn, score, nextId) {
+  document.querySelectorAll('.option-btn').forEach(b => { b.disabled = true; });
+  btn.classList.add('selected');
+  const ratio = score / qGraph[currentId].max;
+  document.getElementById('chara').className = ratio >= 0.65 ? 'chara happy' : ratio < 0.3 ? 'chara sad' : 'chara';
+  answeredData.push({ cat: qGraph[currentId].cat, score, max: qGraph[currentId].max });
+  currentId = nextId === 'null' ? null : nextId;
+  setTimeout(() => {
+    if (currentId) renderQuestion(currentId);
+    else startLoading();
+  }, 420);
+}
+
+function startLoading() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('loading-screen').style.display = 'block';
+  const statuses = ['経済資本を分析中...','家族環境を評価中...','遺伝的要因を算出中...','地域・文化格差を計算中...','偏差値を生成中...'];
+  let i = 0;
+  const statusEl = document.getElementById('loading-status');
+  const barEl = document.getElementById('loading-bar');
+  statusEl.textContent = statuses[0];
+  barEl.style.width = '10%';
+  const iv = setInterval(() => {
+    i++;
+    if (i < statuses.length) {
+      statusEl.style.opacity = '0';
+      setTimeout(() => { statusEl.textContent = statuses[i]; statusEl.style.opacity = '1'; }, 150);
+      barEl.style.width = `${(i / statuses.length) * 100}%`;
+    } else {
+      clearInterval(iv);
+      barEl.style.width = '100%';
+      setTimeout(showResult, 500);
+    }
+  }, 500);
+}
+
+function calcDeviation(totalScore, totalMax) {
+  const pct = totalScore / totalMax;
+  const mean = 0.55, sd = 0.15;
+  return Math.max(20, Math.round(((pct - mean) / sd * 10 + 50) * 10) / 10);
+}
+
+function getRankKey(d) {
+  for (const [key, r] of Object.entries(RANKS)) { if (d >= r.min) return key; }
+  return 'D';
+}
+
+function countUp(el, target, duration) {
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = (ease * target).toFixed(1);
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target.toFixed(1);
+  }
+  requestAnimationFrame(step);
+}
+
+function spawnParticles(color) {
+  const colors = [color, '#f472b6', '#fbbf24', '#34d399', '#60a5fa', '#fff'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `left:${Math.random()*100}vw;top:-10px;background:${colors[Math.floor(Math.random()*colors.length)]};width:${4+Math.random()*6}px;height:${4+Math.random()*6}px;animation-duration:${1.5+Math.random()*2}s`;
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 3500);
+    }, i * 40);
+  }
+}
+
+function showResult() {
+  const totalScore = answeredData.reduce((s, d) => s + d.score, 0);
+  const totalMax   = answeredData.reduce((s, d) => s + d.max, 0);
+  const deviation  = calcDeviation(totalScore, totalMax);
+  const rankKey    = getRankKey(deviation);
+  const rank       = RANKS[rankKey];
+
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const flash = document.getElementById('result-flash');
+  flash.style.background = rank.color;
+  flash.style.opacity = '0.25';
+  setTimeout(() => { flash.style.opacity = '0'; }, 200);
+
+  document.getElementById('result-glow').style.background = rank.color;
+  const scoreEl = document.getElementById('result-score');
+  scoreEl.style.color = rank.color;
+
+  const badge = document.getElementById('result-rank-badge');
+  badge.textContent = `ランク ${rank.label}`;
+  badge.style.background = rank.color;
+  setTimeout(() => { badge.style.display = 'inline-block'; }, 800);
+
+  document.getElementById('result-message').textContent = rank.message;
+  document.getElementById('result-percentile').textContent = `回答者の${rank.percentile}に相当します`;
+
+  countUp(scoreEl, deviation, 1400);
+
+  if (rankKey === 'SSR' || rankKey === 'SR') setTimeout(() => spawnParticles(rank.color), 600);
+  if (rankKey === 'D') setTimeout(() => { document.getElementById('result-hero').classList.add('shake'); }, 800);
+
+  const catScores = { eco: 0, cul: 0, fam: 0, gen: 0 };
+  const catMax    = { eco: 0, cul: 0, fam: 0, gen: 0 };
+  answeredData.forEach(d => { catScores[d.cat] += d.score; catMax[d.cat] += d.max; });
+
+  setTimeout(() => {
+    const pcts = {};
+    ['eco','cul','fam','gen'].forEach(key => {
+      const pct = catMax[key] ? Math.round((catScores[key] / catMax[key]) * 100) : 0;
+      pcts[key] = pct;
+      document.getElementById(`${key}-pct`).textContent = `${pct}%`;
+      document.getElementById(`${key}-bar`).style.width = `${pct}%`;
+    });
+    document.getElementById('summary-text').textContent = generateSummary(pcts);
+  }, 300);
+}
+
+function generateSummary(s) {
+  const L = { eco: '経済資本', cul: '文化・地域', fam: '家族・環境', gen: '遺伝・身体' };
+  const H = 65, LOW = 38;
+  const all = Object.entries(s).map(([k, v]) => ({ k, label: L[k], v })).sort((a, b) => b.v - a.v);
+  const highs = all.filter(e => e.v >= H);
+  const lows  = all.filter(e => e.v <  LOW);
+
+  if (highs.length === 4) return '全カテゴリが平均を上回っている。スタート地点としては統計的に有利だった。';
+  if (lows.length  === 4) return '全カテゴリが平均を下回っている。このデータが示すのは事実であり、評価ではない。';
+
+  if (highs.length >= 2 && lows.length === 0)
+    return `${highs.map(e => e.label).join('・')}が高水準で、全体的に恵まれた環境だった。`;
+  if (lows.length >= 2 && highs.length === 0)
+    return `${lows.map(e => e.label).join('・')}が平均を大きく下回っており、複数のハンデを背負ったスタートだった。`;
+  if (highs.length > 0 && lows.length > 0)
+    return `${highs.map(e => e.label).join('・')}は恵まれていたが、${lows.map(e => e.label).join('・')}では平均を下回っている。`;
+
+  const top = all[0], bot = all[all.length - 1];
+  return `${top.label}が相対的に高く、${bot.label}がやや低い。全体としては平均的な環境だった。`;
+}
+
+function shareResult() {
+  const score = document.getElementById('result-score').textContent;
+  const rank  = document.getElementById('result-rank-badge').textContent;
+  const cats = [
+    { name: '経済資本',   val: parseInt(document.getElementById('eco-pct').textContent) },
+    { name: '文化・地域', val: parseInt(document.getElementById('cul-pct').textContent) },
+    { name: '家族・環境', val: parseInt(document.getElementById('fam-pct').textContent) },
+    { name: '遺伝・身体', val: parseInt(document.getElementById('gen-pct').textContent) },
+  ];
+  cats.sort((a, b) => b.val - a.val);
+  const top    = cats[0];
+  const bottom = cats[cats.length - 1];
+  const urlLine = SITE_URL ? `\n\nあなたは？ → ${SITE_URL}` : '\n\nあなたは？';
+  const text = `親ガチャ偏差値：${score}（${rank}）\n\n強み：${top.name}（${top.val}%）\n弱み：${bottom.name}（${bottom.val}%）${urlLine}\n\n#親ガチャ偏差値`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function retryQuiz() {
+  currentId = 'q1'; answeredData = []; questionCount = 0;
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-screen').style.display = 'none';
+  renderQuestion('q1');
+}
+
+renderQuestion('q1');
+</script>
+</body>
+</html>
